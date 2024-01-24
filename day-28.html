@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 27 - Pinia - 將 store 內資料渲染到畫面上</title>
+    <!-- Vue CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- VueDemi，使用 Pinia 必要的相依套件 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-demi/0.13.11/index.iife.js"></script>
+    <script>const I = VueDemi; const vueDemi = VueDemi;</script>
+    <!-- Pinia 網頁版，實戰中還是以 npm 為主，這是比較少見的使用方式 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pinia/2.0.28/pinia.iife.js"></script>
+</head>
+<body>
+    <!-- https://hackmd.io/MUNlbhW1S_qVJ6JE_AG1Tg -->
+    <div id="app">
+    <Plus-Num></Plus-Num>
+    </div>
+<script>
+
+const { createPinia, defineStore, mapState, mapActions } = Pinia;
+
+// add store
+const addStore = defineStore('addStore', {
+  state: () => ({
+    currentNum: 0
+  }),
+  actions: {
+    plusNum() {
+      // 在此取用 state 內的資料可以使用 this
+      this.currentNum += 1;
+      if(this.currentNum > 10){
+        this.currentNum = 0
+      }
+      // console.log(this.currentNum);
+    },
+    minusNum() {
+      this.currentNum -= 2;
+    }
+  }
+})
+
+// Vue app
+const app = Vue.createApp({})
+
+// PlusNum 元件
+app.component('PlusNum', {
+  template: `<p>{{ currentNum }}</p>
+    <button @click="plusNum()">+1</button>
+    <button @click="minusNum()">-2</button>`,
+
+  methods: {
+    ...mapActions(addStore, ['plusNum','minusNum'])
+  },
+  computed: {
+    ...mapState(addStore, ['currentNum'])
+  }
+})
+
+
+const pinia = createPinia();
+app.use(pinia);
+app.mount('#app');
+</script>
+</body>
+</html>
