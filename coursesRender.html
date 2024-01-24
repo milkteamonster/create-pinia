@@ -14,24 +14,21 @@
 </head>
 <body>
     <div id="app">
-    <Welcome-Message></Welcome-Message>
+    <Courses-Num></Courses-Num>
     </div>
 <script>
     console.log(Pinia)
     const { createPinia, defineStore, mapState } = Pinia;
 
-    // defineStore
-    const exampleStore = defineStore('exampleStoreId', {
-    state: ()=>{
-        return {
-            message: 'Pinia Pinia Pinia！'  
-        }
-    },
+    // CourseList store
+    const coursesStore = defineStore('coursesStore', {
+    state: ()=>({
+        courses: ['國文', '英文', '數學']
+    }),
     getters: {
         // 將 state 內資料使用解構方式帶入
-        printMessage: ({ message })=>{
-            // 可以對資料進行操作
-            return 'msg:' + message
+        coursesNum: ({ courses })=>{
+            return courses.length
         }
     }
     })
@@ -40,11 +37,11 @@
     const app = Vue.createApp({})
 
     //元件
-    app.component('WelcomeMessage', {
-        template: `<p>{{ printMessage }}</p>`,
+    app.component('CoursesNum', {
+        template: `<p>科目總數：{{ coursesNum }}</p>`,
         computed: {
             // 這邊第二個參數是要使用 getters 內的函式名稱
-            ...mapState(exampleStore, ['printMessage'])
+            ...mapState(coursesStore, ['coursesNum'])
         }
     })
 
